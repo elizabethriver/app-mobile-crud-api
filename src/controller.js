@@ -8,15 +8,18 @@ const password = process.env.PGPASSWORD;
 const uri = process.env.DATABASE_URL;
 
 const pool = new Pool({
-//   connectionString: uri,
-//   ssl: {
-//     rejectUnauthorized: false
-//   }
-    user: user,
-    host: host,
-    database: db,
-    password: password,
-    port: 5432,
+  //   connectionString: uri,
+  //   ssl: {
+  //     rejectUnauthorized: false
+  //   }
+  user: user,
+  host: host,
+  database: db,
+  password: password,
+  port: 5432,
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });
 // pool.query("SELECT NOW()", (err, res) => {
 //   console.log(err, res);
