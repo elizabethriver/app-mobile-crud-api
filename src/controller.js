@@ -67,9 +67,11 @@ const updateContactById = async (req, res) => {
   const id = req.params.id;
   const { firstName, lastName, phoneMobile } = req.body;
   console.log(id, firstName, lastName, phoneMobile);
-  const textSearch =
-    "SELECT FirstName, LastName FROM ContactsUser WHERE FirstName = $1 AND LastName = $2;";
-  const valuesSearch = [firstName, lastName];
+  const textSearchByID = "SELECT * FROM ContactsUser WHERE ContactID = $1;";
+  const valuesSearchByID = [id];
+//   const textSearch =
+//     "SELECT * FROM ContactsUser WHERE FirstName = $1 AND LastName = $2;";
+//   const valuesSearch = [firstName, lastName];
   const text =
     "UPDATE ContactsUser SET FirstName = $1, LastName= $2, NumberPhone = $3 WHERE ContactID = $4;";
   const values = [firstName, lastName, phoneMobile, id];
@@ -88,19 +90,35 @@ const updateContactById = async (req, res) => {
         message: "Some inputs should be a text",
       });
     } else {
-      const responseSearch = await pool.query(textSearch, valuesSearch);
-
-      if (responseSearch.rows.length !== 0) {
-        res.status(418).json({
-          message: "This contact already exist",
+      const responseSearchByID = await pool.query(
+        textSearchByID,
+        valuesSearchByID
+      );
+      if (responseSearchByID.rows.length === 0) {
+        res.status(404).json({
+          message: "This contactID doesnt exist",
         });
       } else {
+        // const responseSearch = await pool.query(textSearch, valuesSearch);
+        // console.log(responseSearch.rows);
+        // if (responseSearch.rows.length === 0) {
+        //   res.status(418).json({
+        //     message: "This contact already exist",
+        //   });
+        // } else {
+        //   const response = await pool.query(text, values);
+        //   console.log(response.rows);
+        //   res.status(200).json({
+        //     message: "Updated contact",
+        //     body: { user: { firstName, lastName, phoneMobile } },
+        //   });
+        // }
         const response = await pool.query(text, values);
-        console.log(response.rows);
-        res.status(200).json({
-          message: "Updated contact",
-          body: { user: { firstName, lastName, phoneMobile } },
-        });
+          console.log(response.rows);
+          res.status(200).json({
+            message: "Updated contact",
+            body: { user: { firstName, lastName, phoneMobile } },
+          });
       }
     }
   } catch (err) {
@@ -111,13 +129,21 @@ const updateContactById = async (req, res) => {
 const deleteContactById = async (req, res) => {
   const id = req.params.id;
   const text = "DELETE FROM ContactsUser WHERE ContactID = $1;";
+  const textSearch = "SELECT * FROM ContactsUser WHERE ContactID = $1;";
   const values = [id];
   try {
-    const response = await pool.query(text, values);
-    console.log(response);
-    res.status(200).json({
-      message: `Contact ${id} deleted`,
-    });
+    const responseSearch = await pool.query(textSearch, values);
+    if (responseSearch.rows.length === 0) {
+      res.status(404).json({
+        message: "This contactId not exist",
+      });
+    } else {
+      const response = await pool.query(text, values);
+      console.log(response);
+      res.status(200).json({
+        message: `Contact ${id} deleted`,
+      });
+    }
   } catch (error) {
     console.log(err.stack);
   }
