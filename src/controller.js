@@ -15,7 +15,7 @@ const getContacts = async (req, res) => {
     const response = await pool.query("SELECT * FROM  ContactsUser");
     console.log(response.rows);
     res.status(200).json(response.rows);
-  } catch (error) {
+  } catch (err) {
     console.log(err.stack);
   }
 };
@@ -144,7 +144,7 @@ const deleteContactById = async (req, res) => {
         message: `Contact ${id} deleted`,
       });
     }
-  } catch (error) {
+  } catch (err) {
     console.log(err.stack);
   }
 };
