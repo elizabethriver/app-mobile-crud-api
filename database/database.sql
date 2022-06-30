@@ -11,3 +11,4 @@ INSERT INTO ContactsUser (FirstName, LastName, NumberPhone) VALUES ('Eli', 'Rive
 UPDATE ContactsUser SET FirstName = 'ANA', LastName = "Lira", NumberPhone = '90293232'  WHERE ContactID = 1;
 DELETE FROM ContactsUser WHERE ContactID = 1;
 SELECT * FROM ContactsUser WHERE ContactID = 1;
+alter table ContactsUser add constraint unique_NumberPhone unique (NumberPhone);

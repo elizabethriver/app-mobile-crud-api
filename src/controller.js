@@ -8,10 +8,6 @@ const password = process.env.PGPASSWORD;
 const uri = process.env.DATABASE_URL;
 
 const pool = new Pool({
-  //   connectionString: uri,
-  //   ssl: {
-  //     rejectUnauthorized: false
-  //   }
   user: user,
   host: host,
   database: db,
@@ -21,10 +17,6 @@ const pool = new Pool({
     rejectUnauthorized: false,
   },
 });
-// pool.query("SELECT NOW()", (err, res) => {
-//   console.log(err, res);
-//   pool.end();
-// });
 
 const getContacts = async (req, res) => {
   try {
@@ -83,11 +75,8 @@ const updateContactById = async (req, res) => {
   const id = req.params.id;
   const { firstName, lastName, phoneMobile } = req.body;
   console.log(id, firstName, lastName, phoneMobile);
-  const textSearchByID = "SELECT * FROM ContactsUser WHERE ContactID = $1;";
-  const valuesSearchByID = [id];
-  //   const textSearch =
-  //     "SELECT * FROM ContactsUser WHERE FirstName = $1 AND LastName = $2;";
-  //   const valuesSearch = [firstName, lastName];
+  const textSearch = "SELECT * FROM ContactsUser WHERE NumberPhone = $1;";
+  const valuesSearch = [phoneMobile];
   const text =
     "UPDATE ContactsUser SET FirstName = $1, LastName= $2, NumberPhone = $3 WHERE ContactID = $4;";
   const values = [firstName, lastName, phoneMobile, id];
@@ -106,35 +95,25 @@ const updateContactById = async (req, res) => {
         message: "Some inputs should be a text",
       });
     } else {
-      const responseSearchByID = await pool.query(
-        textSearchByID,
-        valuesSearchByID
-      );
-      if (responseSearchByID.rows.length === 0) {
-        res.status(404).json({
-          message: "This contactID doesnt exist",
-        });
+      const responseSearchByID = await pool.query(textSearch, valuesSearch);
+      if (responseSearchByID.rows.length > 0) {
+        res
+          .status(404)
+          .json({
+            message: "This numberPhone already exists",
+          })
+          .end();
       } else {
-        // const responseSearch = await pool.query(textSearch, valuesSearch);
-        // console.log(responseSearch.rows);
-        // if (responseSearch.rows.length === 0) {
-        //   res.status(418).json({
-        //     message: "This contact already exist",
-        //   });
-        // } else {
-        //   const response = await pool.query(text, values);
-        //   console.log(response.rows);
-        //   res.status(200).json({
-        //     message: "Updated contact",
-        //     body: { user: { firstName, lastName, phoneMobile } },
-        //   });
-        // }
-        const response = await pool.query(text, values);
-        console.log(response.rows);
-        res.status(200).json({
-          message: "Updated contact",
-          body: { user: { firstName, lastName, phoneMobile } },
-        });
+        try {
+          const response = await pool.query(text, values);
+          console.log(response.rows);
+          res.status(200).json({
+            message: "Updated contact",
+            body: { user: { firstName, lastName, phoneMobile } },
+          });
+        } catch (err) {
+          console.log(err.stack);
+        }
       }
     }
   } catch (err) {
