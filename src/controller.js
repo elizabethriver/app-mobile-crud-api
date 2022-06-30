@@ -25,20 +25,48 @@ const addContact = async (req, res) => {
   try {
     const response = await pool.query(text, values);
     console.log(response.rows);
-    res
-      .status(200)
-      .json({ message: "Added contact", body: { user: {firstName, lastName, phoneMobile} } });
+    res.status(200).json({
+      message: "Added contact",
+      body: { user: { firstName, lastName, phoneMobile } },
+    });
   } catch (err) {
     console.log(err.stack);
   }
 };
 
-const updateContactById = (req, res) => {
-  res.send("updateContactById");
+const updateContactById = async(req, res) => {
+  const id = req.params.id;
+  const { firstName, lastName, phoneMobile } = req.body;
+  console.log(id, firstName, lastName, phoneMobile);
+  const text =
+  "UPDATE ContactsUser SET FirstName = $1, LastName= $2, NumberPhone = $3 WHERE ContactID = $4;"
+  const values = [firstName, lastName, phoneMobile, id];
+  try {
+    const response = await pool.query(text, values);
+    console.log(response.rows);
+    res.status(200).json({
+      message: "Updated contact",
+      body: { user: { firstName, lastName, phoneMobile } },
+    });
+  } catch (error) {
+    console.log(err.stack);
+  }
 };
 
-const deleteContactById = (req, res) => {
-  res.send("deleteContactById");
+const deleteContactById = async(req, res) => {
+    const id = req.params.id;
+    const text =
+    "DELETE FROM ContactsUser WHERE ContactID = $1;"
+    const values = [id];
+    try {
+      const response = await pool.query(text, values);
+      console.log(response);
+      res.status(200).json({
+        message: `Contact ${id} deleted`,
+      });
+    } catch (error) {
+      console.log(err.stack);
+    }
 };
 
 module.exports = {
