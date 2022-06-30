@@ -5,14 +5,14 @@ const host = process.env.PGHOST;
 const user = process.env.PGUSER;
 const db = process.env.PGDATABASE;
 const password = process.env.PGPASSWORD;
-const port = process.env.PGPORT;
+ 
 
 const pool = new Pool({
   user: user,
   host: host,
   database: db,
   password: password,
-  port: port,
+  port: process.env.PGPORT,
 });
 
 const getContacts = async (req, res) => {
