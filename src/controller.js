@@ -5,15 +5,23 @@ const host = process.env.PGHOST;
 const user = process.env.PGUSER;
 const db = process.env.PGDATABASE;
 const password = process.env.PGPASSWORD;
- 
+const uri = process.env.DATABASE_URL;
 
 const pool = new Pool({
-  user: user,
-  host: host,
-  database: db,
-  password: password,
-  port: 5432,
+  connectionString: uri,
+  ssl: {
+    rejectUnauthorized: false
+  }
+  //   user: user,
+  //   host: host,
+  //   database: db,
+  //   password: password,
+  //   port: 5432,
 });
+// pool.query("SELECT NOW()", (err, res) => {
+//   console.log(err, res);
+//   pool.end();
+// });
 
 const getContacts = async (req, res) => {
   try {
@@ -74,9 +82,9 @@ const updateContactById = async (req, res) => {
   console.log(id, firstName, lastName, phoneMobile);
   const textSearchByID = "SELECT * FROM ContactsUser WHERE ContactID = $1;";
   const valuesSearchByID = [id];
-//   const textSearch =
-//     "SELECT * FROM ContactsUser WHERE FirstName = $1 AND LastName = $2;";
-//   const valuesSearch = [firstName, lastName];
+  //   const textSearch =
+  //     "SELECT * FROM ContactsUser WHERE FirstName = $1 AND LastName = $2;";
+  //   const valuesSearch = [firstName, lastName];
   const text =
     "UPDATE ContactsUser SET FirstName = $1, LastName= $2, NumberPhone = $3 WHERE ContactID = $4;";
   const values = [firstName, lastName, phoneMobile, id];
@@ -119,11 +127,11 @@ const updateContactById = async (req, res) => {
         //   });
         // }
         const response = await pool.query(text, values);
-          console.log(response.rows);
-          res.status(200).json({
-            message: "Updated contact",
-            body: { user: { firstName, lastName, phoneMobile } },
-          });
+        console.log(response.rows);
+        res.status(200).json({
+          message: "Updated contact",
+          body: { user: { firstName, lastName, phoneMobile } },
+        });
       }
     }
   } catch (err) {
