@@ -3,7 +3,7 @@ CREATE TABLE ContactsUser (
     ContactID SERIAL PRIMARY KEY,  
     FirstName varchar(255) NOT NULL,  
     LastName varchar(255)NOT NULL,  
-    NumberPhone varchar(255) NOT NULL 
+    NumberPhone varchar(255) UNIQUE NOT NULL,
 );
 SELECT * FROM  ContactsUser;
 SELECT FirstName, LastName FROM  ContactsUser WHERE FirstName = "Juan" AND LastName = "Francisco";
