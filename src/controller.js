@@ -12,7 +12,7 @@ const pool = new Pool({
   host: host,
   database: db,
   password: password,
-  port: process.env.PGPORT,
+  port: process.env.PORT,
 });
 
 const getContacts = async (req, res) => {
