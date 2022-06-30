@@ -6,12 +6,8 @@ CREATE TABLE ContactsUser (
     NumberPhone varchar(255) NOT NULL 
 );
 SELECT * FROM  ContactsUser;
+SELECT FirstName, LastName FROM  ContactsUser WHERE FirstName = "Juan" AND LastName = "Francisco";
 INSERT INTO ContactsUser (FirstName, LastName, NumberPhone) VALUES ('Eli', 'Rivera', '980176169');
 UPDATE ContactsUser SET FirstName = 'ANA', LastName = "Lira", NumberPhone = '90293232'  WHERE ContactID = 1;
 DELETE FROM ContactsUser WHERE ContactID = 1;
-
-SELECT *
-FROM
-	ContactsUser
-WHERE
-	NumberPhone = '7894785';
+SELECT * FROM ContactsUser WHERE ContactID = 1;
